@@ -3,4 +3,4 @@
  * control of Petri networks, at the domain level (business layer).
  */
 
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;

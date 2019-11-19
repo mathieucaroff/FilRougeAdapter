@@ -1,4 +1,4 @@
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;
 
 /**
  * This class holds the generic operations on ArcPull objects and what can be

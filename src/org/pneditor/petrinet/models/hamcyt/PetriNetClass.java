@@ -1,4 +1,4 @@
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -1,4 +1,4 @@
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;
 
 /**
  * This class defines the way operations are handled for basic pull arcs

@@ -1,4 +1,4 @@
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;
 
 /**
  * This interface defines the operations accessible a user can use on a Place.

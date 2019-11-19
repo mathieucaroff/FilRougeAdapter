@@ -1,4 +1,4 @@
-package filRouge.FilRouge;
+package org.pneditor.petrinet.models.hamcyt;
 
 /**
  * This interface gives a type to ArcPull objects that can be manipulated by.
