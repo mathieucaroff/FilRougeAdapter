@@ -4,52 +4,50 @@ import org.pneditor.petrinet.AbstractArc;
 import org.pneditor.petrinet.AbstractNode;
 import org.pneditor.petrinet.ResetArcMultiplicityException;
 
-public class AdapterArc extends AbstractArc {
+public abstract class AdapterArc extends AbstractArc {
 
-	public AdapterArc() {
-		// TODO Auto-generated constructor stub
+	private AbstractNode source;
+	private AbstractNode destination;
+	private int multiplicity;
+
+	protected AdapterArc(AbstractNode source, AbstractNode destination, int multiplicity) {
+		this.source = source;
+		this.destination = destination;
+		this.multiplicity = multiplicity;
 	}
 
 	@Override
 	public AbstractNode getSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return source;
 	}
 
 	@Override
 	public AbstractNode getDestination() {
-		// TODO Auto-generated method stub
-		return null;
+		return destination;
 	}
 
 	@Override
 	public boolean isReset() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isRegular() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isInhibitory() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public int getMultiplicity() throws ResetArcMultiplicityException {
-		// TODO Auto-generated method stub
-		return 0;
+		return multiplicity;
 	}
 
 	@Override
 	public void setMultiplicity(int multiplicity) throws ResetArcMultiplicityException {
-		// TODO Auto-generated method stub
-
+		this.multiplicity = multiplicity;
 	}
-
 }
