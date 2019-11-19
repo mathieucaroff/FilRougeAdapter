@@ -21,15 +21,20 @@ import java.awt.Cursor;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.*;
-import javax.swing.event.*;
-import org.pneditor.editor.actions.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.pneditor.editor.actions.AboutAction;
+import org.pneditor.editor.actions.ChangeModelAction;
 import org.pneditor.editor.actions.algorithms.BoundednessAction;
 import org.pneditor.editor.actions.draw.ArcSelectToolAction;
 import org.pneditor.editor.actions.draw.PlaceSelectToolAction;
@@ -56,7 +61,9 @@ import org.pneditor.editor.actions.file.OpenFileAction;
 import org.pneditor.editor.actions.file.QuitAction;
 import org.pneditor.editor.actions.file.SaveAction;
 import org.pneditor.editor.actions.file.SaveFileAsAction;
-import org.pneditor.editor.canvas.*;
+import org.pneditor.editor.canvas.Canvas;
+import org.pneditor.editor.canvas.Selection;
+import org.pneditor.editor.canvas.SelectionChangedListener;
 import org.pneditor.editor.filechooser.EpsFileType;
 import org.pneditor.editor.filechooser.FileType;
 import org.pneditor.editor.filechooser.FileTypeException;
@@ -174,7 +181,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	public void setCurrentModel(final String model) {
 		this.model = model;
 		this.mainFrame.setTitle(getNewWindowTitle());
-		
+
 		for (final JMenuItem modelItem : this.modelsList) {
 			if (modelItem.getName().equals(getCurrentModel())) {
 				modelItem.setEnabled(false);
@@ -294,7 +301,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	public JPopupMenu getPlacePopup() {
 		return this.placePopup;
 	}
-	
+
 	private void setupPlacePopup() {
 		this.placePopup = new JPopupMenu();
 		this.placePopup.add(this.setLabel);
@@ -308,7 +315,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	public JPopupMenu getTransitionPopup() {
 		return this.transitionPopup;
 	}
-	
+
 	private void setupTransitionPopup() {
 		this.transitionPopup = new JPopupMenu();
 		this.transitionPopup.add(this.setLabel);
@@ -321,7 +328,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	public JPopupMenu getArcPopup() {
 		return this.arcPopup;
 	}
-	
+
 	private void setupArcPopup() {
 		this.arcPopup = new JPopupMenu();
 		this.arcPopup.add(this.setArcMultiplicity);
@@ -335,7 +342,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	public JPopupMenu getCanvasPopup() {
 		return this.canvasPopup;
 	}
-	
+
 	private void setupCanvasPopup() {
 		this.canvasPopup = new JPopupMenu();
 		this.canvasPopup.add(this.pasteAction);
@@ -347,20 +354,20 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	private JToggleButton transition;
 	private JToggleButton arc;
 	private JToggleButton token;
-	
+
 	private Action setLabel;
 	private Action setTokens;
 	private Action setArcMultiplicity;
 	private Action setArcInhibitory;
 	private Action setArcReset;
 	private Action setArcRegular;
-	
+
 	private Action delete;
 	private Action cutAction;
 	private Action copyAction;
 	private Action pasteAction;
 	private Action selectAllAction;
-	
+
 	private final Set<JMenuItem> modelsList = new HashSet<>();
 
 	public void refreshAll() {
@@ -382,7 +389,6 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		final boolean isPlace = this.clickedElement != null && this.clickedElement.isPlace();
 		final boolean isSourceAPlace = isArc && ((GraphicArc) this.clickedElement).getArc().isSourceAPlace();
 		final boolean isReset = isArc && ((GraphicArc) this.clickedElement).getArc().isReset();
-
 
 		this.cutAction.setEnabled(isCutable);
 		this.copyAction.setEnabled(isCopyable);
@@ -462,18 +468,18 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 	}
 
 	private JMenu setupAndGetFileMenu() {
-		
-	 	final List<FileType> openSaveFiletypes = new LinkedList<>();
+
+		final List<FileType> openSaveFiletypes = new LinkedList<>();
 		openSaveFiletypes.add(new PflowFileType());
-		
+
 		final List<FileType> importFiletypes = new LinkedList<>();
 		importFiletypes.add(new ViptoolPnmlFileType());
-		
+
 		final List<FileType> exportFiletypes = new LinkedList<>();
 		exportFiletypes.add(new ViptoolPnmlFileType());
 		exportFiletypes.add(new EpsFileType());
 		exportFiletypes.add(new PngFileType());
-		
+
 		final Action newFile = new NewFileAction(this);
 		final Action openFile = new OpenFileAction(this, openSaveFiletypes);
 		final Action saveFile = new SaveAction(this, openSaveFiletypes);
@@ -481,7 +487,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		final Action importFile = new ImportAction(this, importFiletypes);
 		final Action exportFile = new ExportAction(this, exportFiletypes);
 		final Action quit = new QuitAction(this);
-		
+
 		this.toolBar.add(newFile);
 		this.toolBar.add(openFile);
 		this.toolBar.add(saveFile);
@@ -491,7 +497,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 
 		final JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
-		
+
 		fileMenu.add(newFile);
 		fileMenu.add(openFile);
 		fileMenu.add(saveFile);
@@ -500,10 +506,10 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		fileMenu.add(exportFile);
 		fileMenu.addSeparator();
 		fileMenu.add(quit);
-		
+
 		return fileMenu;
 	}
-	
+
 	private JMenu setupAndGetElementMenu() {
 		this.setLabel = new SetLabelAction(this);
 		this.setTokens = new SetTokensAction(this);
@@ -511,10 +517,10 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		this.setArcInhibitory = new SetArcInhibitoryAction(this);
 		this.setArcRegular = new SetArcRegularAction(this);
 		this.setArcReset = new SetArcResetAction(this);
-		
+
 		final JMenu elementMenu = new JMenu("PetriNet");
 		elementMenu.setMnemonic('P');
-		
+
 		elementMenu.add(this.setLabel);
 		elementMenu.addSeparator();
 		elementMenu.add(this.setTokens);
@@ -523,17 +529,17 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		elementMenu.add(this.setArcInhibitory);
 		elementMenu.add(this.setArcReset);
 		elementMenu.add(this.setArcRegular);
-		
+
 		return elementMenu;
 	}
-	
+
 	private JMenu setupAndGetEditMenu() {
 		this.delete = new DeleteAction(this);
 		this.cutAction = new CutAction(this);
 		this.copyAction = new CopyAction(this);
 		this.pasteAction = new PasteAction(this);
 		this.selectAllAction = new SelectAllAction(this);
-		
+
 		this.toolBar.add(this.cutAction);
 		this.toolBar.add(this.copyAction);
 		this.toolBar.add(this.pasteAction);
@@ -542,10 +548,10 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		this.toolBar.add(this.undo);
 		this.toolBar.add(this.redo);
 		this.toolBar.add(this.delete);
-		
+
 		final JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('E');
-		
+
 		editMenu.add(this.undo);
 		editMenu.add(this.redo);
 		editMenu.addSeparator();
@@ -554,10 +560,10 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		editMenu.add(this.pasteAction);
 		editMenu.add(this.selectAllAction);
 		editMenu.add(this.delete);
-		
+
 		return editMenu;
 	}
-	
+
 	private JMenu setupAndGetDrawMenu() {
 
 		final Action selectToolSelectionAction = new SelectionSelectToolAction(this);
@@ -586,47 +592,53 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		this.toolBar.add(this.arc);
 		this.toolBar.add(this.token);
 		this.toolBar.addSeparator();
-		
+
 		final ButtonGroup drawGroup = new ButtonGroup();
 		drawGroup.add(this.select);
 		drawGroup.add(this.place);
 		drawGroup.add(this.transition);
 		drawGroup.add(this.arc);
 		drawGroup.add(this.token);
-		
+
 		final JMenu drawMenu = new JMenu("Draw");
 		drawMenu.setMnemonic('D');
-		
+
 		drawMenu.add(selectToolSelectionAction);
 		drawMenu.addSeparator();
 		drawMenu.add(selectToolPlaceAction);
 		drawMenu.add(selectToolTransitionAction);
 		drawMenu.add(selectToolArcAction);
 		drawMenu.add(selectToolTokenAction);
-		
+
 		return drawMenu;
 
 	}
-	
+
 	private JMenu setupAndGetChangeMenu() {
 		final JMenu changeMenu = new JMenu("Change model");
 		changeMenu.setMnemonic('C');
-		String dirName = "src/org/pneditor/petrinet/adapters";
+		String dirName = Paths.get("src", "org", "pneditor", "petrinet", "adapters").toString();
 		final File folder = new File(dirName);
-		
+
+		String splitRx = "/";
+		if (File.separatorChar == '\\') {
+			splitRx = "\\\\";
+		}
+
 		for (final File modelPath : folder.listFiles()) {
-			final String modelString = modelPath.toString().split("/")[5];
-			final JMenuItem modelItem = changeMenu.add(new ChangeModelAction(this,modelString));
+			final String[] parts = modelPath.toString().split(splitRx);
+			final String modelString = parts[5];
+			final JMenuItem modelItem = changeMenu.add(new ChangeModelAction(this, modelString));
 			modelItem.setName(modelString);
 			if (modelString.equals(getCurrentModel())) {
 				modelItem.setEnabled(false);
 			}
 			this.modelsList.add(modelItem);
 		}
-		
+
 		return changeMenu;
 	}
-	
+
 	private void setupMainFrame() {
 		this.toolBar.setFloatable(false);
 
@@ -642,7 +654,7 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 
 		final JMenu helpMenu = new JMenu("Help");
 		helpMenu.add(new AboutAction(this));
-		
+
 		menuBar.add(setupAndGetFileMenu());
 		menuBar.add(setupAndGetEditMenu());
 		menuBar.add(setupAndGetDrawMenu());
@@ -704,8 +716,9 @@ public final class Root implements WindowListener, ListSelectionListener, Select
 		if (isModified()) {
 			windowTitle += " [modified]";
 		}
-		windowTitle += " - " + getAppShortName() + " - " + (this.model != null ? this.model : "initial"); // FIXME: why null at
-																								// the start?
+		windowTitle += " - " + getAppShortName() + " - " + (this.model != null ? this.model : "initial"); // FIXME: why
+																											// null at
+		// the start?
 		return windowTitle;
 	}
 
