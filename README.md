@@ -1,4 +1,4 @@
-# FilRouge Adater
+﻿# FilRouge Adapter
 
 -- for the PNEditor
 
@@ -6,13 +6,10 @@ This is a project created for an IT course at IMT Atlantique engineer school.
 
 More specifically, this is the FilRouge project, Exercice 6 from the UE MAPD of the TAFF DCL.
 
-- The code we wrote was copy pasted to the package `org.pneditor.petrinet.models.hamcyt`
-- The code of the adapter is in the package `org.pneditor.petrinet.adapters.imta`
-- The self-evaluation is presented in this here README file
-
 ## Content
 
-- Tests
+- "Référentiel des documents"
+- Glossary
 - Self evaluation
   - Comments
   - Modularity
@@ -20,56 +17,15 @@ More specifically, this is the FilRouge project, Exercice 6 from the UE MAPD of 
   - Evolutivity and Maintainability
 - Source management
 
-## Building
+## "Référentiel des documents"
 
-Run the below command inside `FilRouge` to run the tests and generate a `.jar`
-build in `target/`.
+- The code we wrote was copy pasted to the package `org.pneditor.petrinet.models.hamcyt`
+- The code of the adapter is in the package `org.pneditor.petrinet.adapters.imta`
+- The self-evaluation is presented in this here README file
+- The "référentiel des documents" -- this list
 
-```
-mvn package
-```
-
-## Documentation
-
-One class is available to the user:
-
-- PetriNetFactory
-
-The interfaces visible to the user are the following:
-
-- PetriNet
-- Place
-- Transition
-- ArcPull
-- ArcPush
-
-The methods of the class and the interfaces have been documented.
-
-In the class diagram `doc/uml/2019-10-21-petrinet-class.pdf`
-(exported from `FilRouge/diagram/petrinet-class.ucls`), the class and the 5 interfaces available to the user are to the left side.
-
-## Design choices
-
-Since we do not have a client to clarify the specification, we had to make
-design choices. In particular:
-
-- We decided to allow pulling a transition whose pullability critera are not
-  fulfilled
-- We decided to allow places to hold a negative number of counters
-
-If these behaviors are undesired, we are ready to make changes according to the
-new specification information the client brings.
-
-## Tests
-
-The following classes have unit tests:
-
-- ArcPullMultiplicty
-- ArcPushClass
-- PlaceClass
-
-The file "PetriNetClassTest" contains a large suite of functional tests of the
-PetriNet.
+Note: the given projet's code has been modified to run both on Windows and Linux.
+Note 2: we did not modify the source code of the model we produced earlier.
 
 ## Glossary
 
@@ -109,31 +65,31 @@ do not have multiplicities: They follow their own logic
 ### Comments
 
 - [x] Code written in English
-- [ ] Comments all in the same language
-- [ ] Javadoc on all exposed methods
-- [ ] Comments dedicated to maintainers
+- [x] Comments all in the same language
+- [x] Javadoc on all exposed methods
+- [x] Comments dedicated to maintainers
 
 ### Style and conventions
 
-- [ ] Homogeneous indentation (tabs)
-- [ ] UpperCamelCase for Classes and lowerCamelCase for variables
-- [ ] Methods are ordered
+- [x] Homogeneous indentation (tabs)
+- [x] UpperCamelCase for Classes and lowerCamelCase for variables
+- [?] Methods are ordered -- We preserved the order of the parent classes
 - [x] Names are meaningful (NB: subjective criterion)
 
 ### Modularity
 
-- [ ] No class in the root package (unsure)
-- [ ] ~~`package.info`~~ `package-info.java` describes each package
+- [x] No class in the root package
+- [x] ~~`package.info`~~ `package-info.java` describes each package
       responsibility
 - [ ] Each class responsibility is defined
-- [ ] No public attributes
-- [ ] Methods are short (except for tests)
+- [x] No public attributes
+- [x] Methods are short (except for tests) -- (record of 14 lines held by addRegularArc)
 
 ### Safety
 
-- [ ] Methods protect themselves
-- [ ] All methods **exposed to the user** have at least one test
-- [ ] Easy way to run all tests (`mvn test`)
+- [x] Methods protect themselves -- no other exposed methods than the required ones
+- [ ] ~~All methods have at least one test~~ No test
+- [ ] ~~Easy way to run all tests (`mvn test`)~~
 
 ### Evolutivity and Maintainability
 
